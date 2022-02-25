@@ -15,19 +15,29 @@ function addBookToLibrary(newBook) {
     myLibrary.push(newBook);
 }
 
-// displaying all the books on the page & calls function to delete books if remove button is pressed
+// creating DOM elements for Book & displaying all the books on the page
 function displayBooks() {
     document.querySelectorAll('#book-card').forEach(e => e.remove());
 
     myLibrary.forEach((book, index) => {
         let element = document.createElement('div');
         element.setAttribute("id", "book-card");
-        let textElement = document.createElement('p');
-        let bookIndex = index + 1;
-        textElement.textContent = "Book: " + bookIndex + " Author: " + book.author +
-            " Title: " + book.title + " Pages: " + book.pages +
-            " Book read? " + book.read;
-        element.appendChild(textElement);
+        element.textContent = "Book number: " + (index + 1);
+
+        let author = document.createElement('p');
+        let title = document.createElement('p');
+        let pages = document.createElement('p');
+        let read = document.createElement('p');
+        author.textContent = "Author: " + book.author;
+        title.textContent = "Title: " + book.title;
+        pages.textContent = "Pages: " + book.pages
+        read.textContent = "Book read? " + book.read;
+        
+        element.appendChild(author);
+        element.appendChild(title);
+        element.appendChild(pages);
+        element.appendChild(read);
+
         let removeButton = document.createElement('button');
         removeButton.setAttribute('id', 'remove-button');
         removeButton.textContent = "Remove Book"
@@ -47,11 +57,11 @@ function displayBooks() {
     changeStatus();
 }
 
-// displays & hides the form to input Book details
+// displays & hides the form to input Book details 
 function displayForm() {
     let form = document.querySelector('.form-container');
     if (form.style.display === "none") {
-        form.style.display = 'block';
+        form.style.display = 'flex';
     } else {
         form.style.display = 'none';
     }
@@ -69,14 +79,13 @@ function deleteBooks() {
     })
 }
 
+//change read status
 function changeStatus() {
     let statusButton = document.querySelectorAll('#status-button');
     statusButton.forEach(button => {
         button.addEventListener('click', () => {
             let dataIndex = button.getAttribute('data-item-index');
-            console.log(dataIndex);
             let change = myLibrary[dataIndex];
-            console.log(change.read);
             if (change.read === "Yes") {
                 change.read = "No";
                 displayBooks();
@@ -84,13 +93,10 @@ function changeStatus() {
             } else {
                 change.read = "Yes";
                 displayBooks();
-            }
-            
-            
+            }     
         })
     })
 }
-
 
 // Calls new Book with values from the input form
 function formValues() {
