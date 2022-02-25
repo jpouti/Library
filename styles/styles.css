@@ -9,3 +9,118 @@ html {
     box-sizing: inherit;
 }
 
+body {
+    background-color: antiquewhite;
+}
+
+/* Header */
+
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5vh;
+    padding-top: 2.5vh;
+    height: 20vh;
+    background-color: aliceblue;
+    color: green;
+}
+
+.header-container h1 {
+    font-size: 3rem;
+}
+
+#new-book {
+    font-size: 2rem;
+    color: green;
+    border-radius: 6px;
+    padding: 0.5vh 0.5vw;
+    background-color: beige;
+    border: solid 1px green;
+}
+
+#new-book:hover {
+    background-color: greenyellow;
+}
+
+/* Form styles */
+
+.form-container {
+    position: fixed;
+    left: 35vw;
+    top: 20vh;
+    z-index: 10;
+}
+
+form#book-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30vw;
+    border: solid 2px green;
+    border-radius: 10px;
+    background-color: lightgreen;
+    padding: 1vh 1vw;
+    color: darkgreen;
+}
+
+form#book-input > input {
+    border-radius: 6px;
+    border: solid 2px green;
+    background-color: beige;
+    padding: 5px 5px;
+}
+
+#add-book {
+    background-color: beige;
+    border: solid 1px green;
+    color: green;
+    border-radius: 6px;
+    font-size: 1rem;
+    padding: 5px 5px;
+}
+
+#add-book:hover {
+    background-color: greenyellow;
+}
+
+/* Books */
+
+.book-container {
+    padding: 2.5vh 2.5vw;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 2.5vw;
+}
+
+.book-container > div {
+    display: flex;
+    flex-direction: column;
+    width: 13.33vw;
+    min-height: 30vh;
+    border: solid 2px green;
+    border-radius: 6px;
+    gap: 1vh;
+    padding: 0.5vh 0.5vw;
+    background-color: beige;
+}
+
+#remove-button {
+    color: whitesmoke;
+    background-color: red;
+    border: solid 1px red;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    padding: 0.25vh 0.25vw;
+}
+
+#status-button {
+    color: whitesmoke;
+    background-color: blue;
+    border: solid 1px blue;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    padding: 0.25vh 0.25vw;
+}
+
