@@ -1,5 +1,6 @@
 const bookContainer = document.querySelector('.book-container');
 const bookValues = document.getElementById("add-book");
+const newBookBtn = document.getElementById("new-book");
 
 let myLibrary = [];
 
@@ -89,7 +90,6 @@ function changeStatus() {
             if (change.read === "Yes") {
                 change.read = "No";
                 displayBooks();
-                console.log(change.read);
             } else {
                 change.read = "Yes";
                 displayBooks();
@@ -106,6 +106,10 @@ function formValues() {
     let read = document.getElementById('read').value;
     newBook = new Book(author, title, pages, read);
 }
+
+newBookBtn.addEventListener("click", () => {
+    displayForm();
+});
 
 bookValues.addEventListener("click", () => {
     formValues();
