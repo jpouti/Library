@@ -1,3 +1,5 @@
+import './baas';
+
 const bookContainer = document.querySelector('.book-container');
 const bookValues = document.getElementById("add-book");
 const newBookBtn = document.getElementById("new-book");
