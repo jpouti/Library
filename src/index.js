@@ -1,4 +1,6 @@
 import './baas';
+import { isUserSignedIn, saveBook } from './baas';
+import uniqid from "uniqid";
 
 const bookContainer = document.querySelector('.book-container');
 const bookValues = document.getElementById("add-book");
@@ -6,12 +8,14 @@ const newBookBtn = document.getElementById("new-book");
 
 let myLibrary = [];
 
-function Book(author, title, pages, read) {
+function Book(author, title, pages, read, id) {
         this.author = author;
         this.title = title;
         this.pages = pages;
         this.read = read;
+        this.id = id;
         addBookToLibrary(this);
+        saveBook(author, title, pages, read, id);
 }
 
 function addBookToLibrary(newBook) {
@@ -106,11 +110,16 @@ function formValues() {
     let title = document.getElementById('title').value;
     let pages = document.getElementById('pages').value;
     let read = document.getElementById('read').value;
-    newBook = new Book(author, title, pages, read);
+    let id = uniqid();
+    new Book(author, title, pages, read, id);
 }
 
 newBookBtn.addEventListener("click", () => {
-    displayForm();
+    if (isUserSignedIn() === false) {
+        alert('Please sign in to display your books, and add new ones');
+    } else if (isUserSignedIn() === true) {
+        displayForm();   
+    }
 });
 
 bookValues.addEventListener("click", () => {
