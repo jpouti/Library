@@ -1,29 +1,33 @@
 import './baas';
-import { isUserSignedIn, saveBook } from './baas';
-import uniqid from "uniqid";
+import { deleteBookFromDb, isUserSignedIn, saveBook } from './baas';
 
 const bookContainer = document.querySelector('.book-container');
 const bookValues = document.getElementById("add-book");
 const newBookBtn = document.getElementById("new-book");
 
-let myLibrary = [];
+export let myLibrary = [];
 
-function Book(author, title, pages, read, id) {
+export class Book {
+    constructor(author, title, pages, read, id) {
         this.author = author;
         this.title = title;
         this.pages = pages;
         this.read = read;
         this.id = id;
         addBookToLibrary(this);
-        saveBook(author, title, pages, read, id);
+    }
 }
 
 function addBookToLibrary(newBook) {
     myLibrary.push(newBook);
 }
 
+export function emptyMyLibrary() {
+    myLibrary.splice(0, myLibrary.length);
+}
+
 // creating DOM elements for Book & displaying all the books on the page
-function displayBooks() {
+export function displayBooks() {
     document.querySelectorAll('#book-card').forEach(e => e.remove());
 
     myLibrary.forEach((book, index) => {
@@ -74,13 +78,21 @@ function displayForm() {
     }
 }
 
+// return book Id
+function getBookId(index) {
+    const book = myLibrary[index];
+    return book.id;
+}
+
 //deletes books and displays remaining books 
 function deleteBooks() {
     let deleteButton = document.querySelectorAll('#remove-button');
     deleteButton.forEach(button => {
         button.addEventListener('click', () => {
             let dataIndex = button.getAttribute('data-item-index');
+            let id = getBookId(dataIndex);
             myLibrary.splice(dataIndex, 1);
+            deleteBookFromDb(id);
             displayBooks();
         })
     })
@@ -110,8 +122,7 @@ function formValues() {
     let title = document.getElementById('title').value;
     let pages = document.getElementById('pages').value;
     let read = document.getElementById('read').value;
-    let id = uniqid();
-    new Book(author, title, pages, read, id);
+    saveBook(author, title, pages, read); // save book to firestore db
 }
 
 newBookBtn.addEventListener("click", () => {

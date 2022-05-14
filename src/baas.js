@@ -12,14 +12,20 @@ import {
     addDoc,
     collection,
     getFirestore,
-    serverTimestamp
+    serverTimestamp,
+    doc,
+    deleteDoc,
+    getDocs,
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
+import { Book, displayBooks, emptyMyLibrary, myLibrary } from './index';
 
 
 // Initialize Firebase
 const config = getFirebaseConfig();
-initializeApp(config);
+const app = initializeApp(config);
+
+const db = getFirestore(app);
 
 const userPicElement = document.getElementById('user-pic');
 const userNameElement = document.getElementById('user-name');
@@ -60,7 +66,6 @@ function getProfilePicUrl() {
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
 function authStateObserver(user) {
-    console.log(user);
    if (user) { // User is signed in!
      // Get the signed-in user's profile pic and name.
      const profilePicUrl = getProfilePicUrl();
@@ -77,6 +82,9 @@ function authStateObserver(user) {
  
      // Hide sign-in button.
      signInBtn.setAttribute('hidden', 'true');
+
+     // load user books
+     loadBooks();
  
    } else { // User is signed out!
      // Hide user's profile and sign-out button.
@@ -86,6 +94,10 @@ function authStateObserver(user) {
  
      // Show sign-in button.
      signInBtn.removeAttribute('hidden');
+
+     // empty myLibrary array & displayd books
+     emptyMyLibrary();
+     displayBooks();
    }
  }
 
@@ -103,13 +115,12 @@ function getUserID() {
 }
 
 // Saves a book to Cloud Firestore
-export async function saveBook(author, title, pages, read, id) {
+export async function saveBook(author, title, pages, read) {
     // Add a new book entry to firebase database by user id
     const uid = getUserID();
    try {
-       await addDoc(collection(getFirestore(), uid), {
+       await addDoc(collection(db, uid), {
             name: getUserName(),
-            bookId: id,
             bookAuthor: author,
             bookTitle: title,
             bookPages: pages,
@@ -120,8 +131,43 @@ export async function saveBook(author, title, pages, read, id) {
      catch(error) {
        console.error('Error writing new book to Firebase Database', error);
      }
+     // load newly added book
+     loadBooks();
 }
 
+// Load user stored books from firestore
+export async function loadBooks() {
+    const uid = getUserID();
+    //emptyMyLibrary(); // clear myLibrary array to avoid duplicates
+    const querySnapshot = await getDocs(collection(db, uid));
+    querySnapshot.forEach((book) => {
+        // if book is displayed => return
+        if (myLibrary.some(e => e.id === book._document.key.path.segments[6])) {
+        // if not displayed, create a new Book => add to myLibrary array
+        } else {
+            new Book(book._document.data.value.mapValue.fields.bookAuthor.stringValue,
+                book._document.data.value.mapValue.fields.bookTitle.stringValue,
+                book._document.data.value.mapValue.fields.bookPages.stringValue,
+                book._document.data.value.mapValue.fields.status.stringValue,
+                book._document.key.path.segments[6]);
+        }
+    })
+    // displays user books on the page
+    displayBooks();
+}
+
+// delete Book from firestore
+export async function deleteBookFromDb(id) {
+    const uid = getUserID();
+    try {
+        await deleteDoc(doc(db, uid, id));
+
+    } catch (error) {
+        console.error('Error while deleting document:', error);
+    }
+    console.log("Book " + id + " succesfully deleted from library");
+    displayBooks();
+};
 
 // Firestore login elements
 const signInBtn = document.getElementById('log-in');
