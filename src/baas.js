@@ -16,6 +16,7 @@ import {
     doc,
     deleteDoc,
     getDocs,
+    setDoc,
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { Book, displayBooks, emptyMyLibrary, myLibrary } from './index';
@@ -161,13 +162,28 @@ export async function deleteBookFromDb(id) {
     const uid = getUserID();
     try {
         await deleteDoc(doc(db, uid, id));
+        console.log("Book " + id + " succesfully deleted from library");
 
     } catch (error) {
         console.error('Error while deleting document:', error);
     }
-    console.log("Book " + id + " succesfully deleted from library");
     displayBooks();
 };
+
+// change book's status on firestore db
+export async function changeStatusDb(id, value) {
+    const uid = getUserID();
+    try {
+        const ref = doc(db, uid, id);
+        await setDoc(ref, { status: value }, { merge: true });
+        console.log("Book " + id + " status changed");
+
+    } catch (error) {
+        console.error('Error while changing status in document:', error);
+        return;
+    }
+    displayBooks();
+}
 
 // Firestore login elements
 const signInBtn = document.getElementById('log-in');

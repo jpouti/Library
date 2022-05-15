@@ -1,5 +1,5 @@
 import './baas';
-import { deleteBookFromDb, isUserSignedIn, saveBook } from './baas';
+import { changeStatusDb, deleteBookFromDb, isUserSignedIn, saveBook } from './baas';
 
 const bookContainer = document.querySelector('.book-container');
 const bookValues = document.getElementById("add-book");
@@ -98,19 +98,20 @@ function deleteBooks() {
     })
 }
 
-//change read status
+//change read status on page & firestore db
 function changeStatus() {
     let statusButton = document.querySelectorAll('#status-button');
     statusButton.forEach(button => {
         button.addEventListener('click', () => {
             let dataIndex = button.getAttribute('data-item-index');
+            let id = getBookId(dataIndex);
             let change = myLibrary[dataIndex];
             if (change.read === "Yes") {
                 change.read = "No";
-                displayBooks();
+                changeStatusDb(id, "No");
             } else {
                 change.read = "Yes";
-                displayBooks();
+                changeStatusDb(id, "Yes");
             }     
         })
     })
